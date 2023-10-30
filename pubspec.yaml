@@ -1,0 +1,30 @@
+name: emiliano_cesare_flutter_template
+description: "Flutter Template created by Emiliano Cesare"
+publish_to: 'none'
+version: 0.0.1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_riverpod: ^2.4.5
+  go_router: ^12.0.1
+  google_fonts: ^6.1.0
+  loggy: ^2.0.3
+  riverpod_annotation: ^2.3.0
+  url_strategy: ^0.2.0
+  flutter_secure_storage: ^9.0.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+  riverpod_generator: ^2.3.5
+  build_runner: ^2.4.6
+  custom_lint: ^0.5.6
+  riverpod_lint: ^2.3.3
+
+flutter:
+  uses-material-design: true
