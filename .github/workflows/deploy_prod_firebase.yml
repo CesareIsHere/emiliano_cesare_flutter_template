@@ -1,0 +1,68 @@
+name: Deploy Production on Firebase Hosting
+
+# on:
+#   push:
+#     branches:
+#       - master
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Git credentials
+        env:
+          GIT_ASKPASS: /usr/bin/echo
+          GIT_AUTH_TOKEN: ${{ secrets.GIT_AUTH_TOKEN }}
+        run: |
+          git config --global credential.helper store
+          git config --global user.email "xxxxxxxx"
+          git config --global user.name "xxxxxxxx"
+          git config --global user.password ${{ secrets.GIT_AUTH_TOKEN }}
+
+      - name: Set Git environment variable
+        run: |
+          echo "export GIT_TERMINAL_PROMPT=0" >> $GITHUB_ENV
+
+      - name: Install Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.13.0"
+          channel: "stable"
+
+      - name: Clear previous builds
+        run: flutter clean
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: build web
+        run: flutter build web --no-tree-shake-icons
+
+      # Uncomment the following lines if you want to upload the artifact
+      # - name: Upload artifact
+      #   uses: actions/upload-artifact@v2
+      #   with:
+      #     name: web
+      #     path: build/web
+
+      # Uncomment the following lines if you want to download the artifact
+      # - name: Download artifact
+      #   uses: actions/download-artifact@v2
+      #   with:
+      #     name: web
+
+      # The following lines copy the build to the public folder so that it can be deployed to Firebase
+      - name: Copy to public
+        run: cp -r ${{ github.workspace }}/build/web/* ${{ github.workspace }}/public/
+
+      - uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: "${{ secrets.GITHUB_TOKEN }}"
+          firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT }}"
+          projectId: xxxxxxx
+          channelId: live
